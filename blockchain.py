@@ -58,8 +58,8 @@ class Blockchain:
     
     # Crear el hash de un bloque
     def hash(self, block):
-        # json se puede codificar directamente en un fromato binario para haslib.sha256
-        encoded_block = json.dumps(block, sort_keys=True ).encode() # 2º arg --> ordenadar alfabéticamente, nos aseguramos que la info viene siempre en el mismo orden (si el orden cambia el hash cambia, efecto avalancha, no nos interesa)
+        # json se puede codificar directamente en un formato binario para haslib.sha256
+        encoded_block = json.dumps(block, sort_keys=True).encode() # 2º arg --> ordenadar alfabéticamente, nos aseguramos que la info viene siempre en el mismo orden (si el orden cambia el hash cambia, efecto avalancha, no nos interesa)
         return hashlib.sha256(encoded_block).hexdigest()
         
         
@@ -96,13 +96,14 @@ class Blockchain:
 
 # Crear una aplicación web
 app = Flask(__name__)
+# Si falla probar con --> app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
 
 
 # Crear un objeto blockchain
 blockchain = Blockchain()
 
 # Minar un bloque
-@app.route('/mine_block')
+@app.route('/mine_block', methods=['GET'])
 def mine_block():
     # 1) Proof of work --> param: previous_proof
     previous_block = blockchain.get_previous_block()
@@ -110,7 +111,7 @@ def mine_block():
     proof = blockchain.proof_of_work(previous_proof)
     
     # 2) Crear el bloque --> param: proof y prev hash
-    previous_hash = hash(previous_block)
+    previous_hash = blockchain.hash(previous_block)
     block = blockchain.create_block(proof, previous_hash)
     
     # 3) Mostrar la info en postman
@@ -124,6 +125,42 @@ def mine_block():
     
     return jsonify(response) , 200 # pasarlo a JSON + código
 
+# Obtener la cadena de bloques al completo
+@app.route('/get_chain', methods=['GET'])
+def get_chain():
+    response = {
+            'chain': blockchain.chain,
+            'length': len(blockchain.chain),
+        }
+    return jsonify(response), 200
+
+# Ejecutar la app
+app.run(host = '0.0.0.0', port=5000, debug=True)
+
+"""
+POSTMAN
+* GET: http://127.0.0.1:5000/get_chain 
+* Respuesta: {
+    "chain": [
+        {
+            "index": 1,
+            "previous_hash": "0",
+            "proof": 1,
+            "timestamp": "2024-07-29 10:22:19.819831"
+        }
+    ],
+    "length": 1
+}
+
+* GET: http://127.0.0.1:5000/mine_block
+* Respuesta: {
+    "index": 2,
+    "message": "¡Enhorabuena! Has minado un nuevo bloque",
+    "previous_hash": "9e6b9bbeaa51489dc9b59bd9e2ae8d36024ea9c001d47d09932909c9b1af0bc6",
+    "proof": 2875,
+    "timestamp": "2024-07-29 10:25:56.457138"
+}
+"""
 
 
 

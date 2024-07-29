@@ -134,8 +134,19 @@ def get_chain():
         }
     return jsonify(response), 200
 
+# implementar "is valid"
+@app.route('/is_valid', methods=['GET'])
+def is_valid():
+    current_chain = blockchain.chain
+    is_valid = blockchain.is_chain_valid(current_chain)
+    if is_valid:
+        response = {'message': 'Todo correcto. La cadena de bloques es válida.'}
+    else:
+        response = {'message': 'Houston, tenemos un problema. La cadena de bloques no es válida.'}
+    return jsonify(response), 200
+
 # Ejecutar la app
-app.run(host = '0.0.0.0', port=5000, debug=True)
+app.run(host='0.0.0.0', port=5000, debug=True)
 
 """
 POSTMAN

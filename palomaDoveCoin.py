@@ -204,8 +204,8 @@ def is_valid():
     return jsonify(response), 200
 
 # añadir una nueva transacción a la cadena de bloques
-@app.route('/add_trasaction', methods=['POST'])
-def add_transactions():
+@app.route('/add_transaction', methods=['POST'])
+def add_transaction():
     json = request.get_json() #obtener json a través de la petición
     transaction_keys = ['sender', 'receiver', 'amount']
     if not all(key in json for key in transaction_keys): # Para cada clave de transaction key están en json?

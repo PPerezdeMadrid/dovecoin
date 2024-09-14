@@ -140,7 +140,7 @@ def is_valid():
     if is_valid:
         response = {'message': 'Todo correcto. La cadena de bloques es válida.'}
     else:
-        response = {'message': 'Houston, tenemos un problema. La cadena de bloques no es válida.'}
+        response = {'message': ' La cadena de bloques no es válida.'}
     return jsonify(response), 200
 
 # Ejecutar la app

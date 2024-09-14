@@ -147,6 +147,9 @@ def is_valid():
         response = {'message': 'Houston, tenemos un problema. La cadena de bloques no es válida.'}
     return jsonify(response), 200
 
+# Parte 3 - Descentralizar la Cadena de Bloques
+
+
 # Ejecutar la app
 app.run(host='0.0.0.0', port=5000, debug=True)
 

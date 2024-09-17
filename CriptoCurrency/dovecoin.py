@@ -5,7 +5,7 @@ Crear un criptomoneda
 # Cliente HTTP Postman: https://www.getpostman.com/
 
 import datetime
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 import json
 import hashlib
 import requests
@@ -253,6 +253,7 @@ def replace_chain():
             'actual_chain': blockchain.chain
         }
     return jsonify(response), 200
+
 
 # Ejecutar la app
 app.run(host='0.0.0.0', port=5000, debug=True)

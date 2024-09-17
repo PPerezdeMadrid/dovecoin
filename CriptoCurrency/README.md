@@ -32,3 +32,15 @@ Notas:
 - Se tiene que ver que nodos hay disponibles
 - Connect_node > replace_chain > Connect_node > replace_chain > Connect_node > replace_chain
 - Base de datos en la nube de nodos??? o en local??
+
+
+Procedimiento:
+- Base de datos para registrar
+- Implementar registro
+- Implementar perfil
+- Implementar Conectarse a nodos 
+- IMplementar ver nodos
+- Implementar Ver Blockchain
+- Implementar Minar Bloque
+- Implementar Añadir transacción
+- Implementar actualizar cadena

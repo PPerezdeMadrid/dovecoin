@@ -1,6 +1,8 @@
 """
 @author: pperezdemadrid
+Crear un criptomoneda
 """
+# Cliente HTTP Postman: https://www.getpostman.com/
 
 import datetime
 from flask import Flask, jsonify, request
@@ -9,6 +11,12 @@ import hashlib
 import requests
 from uuid import uuid4
 from urllib.parse import urlparse
+
+
+# request de flask --> conectarse a un nodo u otro de la cadena de bloques descentralizada
+
+
+
 
 
 """
@@ -147,7 +155,7 @@ node_address = str(uuid4()).replace('-','')
 # Crear un objeto blockchain
 blockchain = Blockchain()
 
-""""
+
 # Minar un bloque
 @app.route('/mine_block', methods=['GET'])
 def mine_block():
@@ -172,7 +180,7 @@ def mine_block():
     }
 
     return jsonify(response), 200  # pasarlo a JSON + código
-"""
+
 
 # Obtener la cadena de bloques al completo
 @app.route('/get_chain', methods=['GET'])

@@ -125,12 +125,10 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    print("Entering in / ...")
     return render_template('indexFull.html')
 
 @app.route('/index')
 def index():
-    print("Entering in Index...")
     return render_template('index.html')
 
 
@@ -142,6 +140,8 @@ blockchain = Blockchain()
 
 @app.route('/mine_block', methods=['GET'])
 def mine_block():
+    userEmail = "Paloma PML" # CAMBIAR!!!!
+    print("Entra en la función mine_block")
     # 1) Proof of work --> param: previous_proof
     previous_block = blockchain.get_previous_block()
     previous_proof = previous_block['proof']
@@ -149,21 +149,22 @@ def mine_block():
 
     # 2) Crear el bloque --> param: proof y prev hash
     previous_hash = blockchain.hash(previous_block)
-    blockchain.add_transaction(sender=node_address, receiver = "Paloma PML", amount=50)
+    blockchain.add_transaction(sender=node_address, receiver = userEmail, amount=0)
     block = blockchain.create_block(proof, previous_hash)
 
     # 3) Mostrar la info en postman
     response = {
-        'message': '¡Enhorabuena! Has minado un nuevo bloque',
+        'message': 'Congratulations! You have just mined a block',
         'index': block['index'],  # Así bloque genesis es el 1
         'timestamp': block['timestamp'],
         'proof': block['proof'],  # el Nonce!
         'previous_hash': block['previous_hash'],
         'transactions': block['transactions'],
     }
+    print(response)
 
     # return jsonify(response), 200  # pasarlo a JSON + código
-    return render_template('mineBlock.html', data=jsonify(response)), 200
+    return render_template('mineBlock.html', data=response), 200
 
 # Obtener la cadena de bloques al completo
 @app.route('/get_chain', methods=['GET'])
@@ -172,8 +173,9 @@ def get_chain():
         'chain': blockchain.chain,
         'length': len(blockchain.chain),
     }
+    print(response)
     # return jsonify(response), 200
-    return render_template('mineBlock.html', data=jsonify(response)), 200
+    return render_template('getChain.html', data=response), 200
 
 # implementar "is valid"
 @app.route('/is_valid', methods=['GET'])
@@ -242,6 +244,6 @@ def replace_chain():
 
 
 if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug=True)
     # app.run(host='0.0.0.0', port=5001, debug=True)
-    app.run(debug=True)
 

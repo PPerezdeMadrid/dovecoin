@@ -10,23 +10,25 @@
             <div class="section-title mb-5">
                 <h5 class="text-primary text-uppercase mb-3">You have just Mined a Block!</h5>
             </div>
-            <div class="row">
+            <div class="information">
                 <h1>{{ data.message }}</h1>
-                <p><strong>Block Index:</strong> {{ data.index }}</p>
-                <p><strong>Timestamp:</strong> {{ data.timestamp }}</p>
-                <p><strong>Nonce:</strong> {{ data.proof }}</p>
-                <p><strong>Previous Block Hash:</strong> {{ data.previous_hash }}</p>
-
+                <div class="doveBlock">
+                    <p><strong>Block Index:</strong> {{ data.index }}</p>
+                    <p><strong>Timestamp:</strong> {{ data.timestamp }}</p>
+                    <p><strong>Nonce:</strong> {{ data.proof }}</p>
+                    <p><strong>Previous Block Hash:</strong> {{ data.previous_hash }}</p>
+                </div>
                 <h2>Transactions:</h2>
                 <ul>
                     {% for transaction in data.transactions %}
                         <li>
                             <strong>From:</strong> {{ transaction.sender }}<br>
-                            <strong>To:</strong> {{ transaction.recipient }}<br>
+                            <strong>To:</strong> {{ transaction.receiver }}<br>
                             <strong>Amount:</strong> {{ transaction.amount }}
                         </li>
                     {% endfor %}
                 </ul>
+                <img src="../static/img/congrats.jpg" >
             </div>
         </div>
     </div>

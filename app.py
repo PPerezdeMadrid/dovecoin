@@ -5,6 +5,7 @@ import hashlib
 import requests
 from uuid import uuid4
 from urllib.parse import urlparse
+from flask import Flask, render_template, request, redirect, flash
 # import doveCoin as dc
 
 class Blockchain:
@@ -132,9 +133,34 @@ app = Flask(__name__)
 def home():
     return render_template('index.html')
 
-@app.route('/contact')
-def contact():
+@app.route('/contact', methods=['GET', 'POST'])
+def go_contact():
+    if request.method == 'POST':
+        # Get the form data
+        name = request.form['name']
+        email = request.form['email']
+        message_body = request.form['message']
+
+        # Prepare the email message
+        msg = Message(f'New Contact Form Submission from {name}',
+                      recipients=['your-email@example.com'])  # Your email
+        msg.body = f"Name: {name}\nEmail: {email}\nMessage: {message_body}"
+
+        try:
+            # Send the email
+            mail.send(msg)
+            flash('Your message has been sent successfully!', 'success')
+        except Exception as e:
+            # Handle any errors in sending the email
+            flash(f'Error sending email: {str(e)}', 'danger')
+        
+        # Redirect to the contact page after form submission
+        return redirect('/contact')
+    
+    # If GET request, just render the form
     return render_template('contact.html')
+
+
 
 # Dirección del nodo en el puerto 5000
 node_address = str(uuid4()).replace('-','')

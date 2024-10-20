@@ -33,6 +33,25 @@
             }
         }
 
+        form {
+            padding: 1% 1% ;
+            border-radius: 5px;
+            width: auto;
+        }
+        label {
+            margin-top: 0.5%;
+        }
+        input {
+            width: 100%;
+            padding: 1% ;
+            margin: 2% ;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 
@@ -45,7 +64,7 @@
                      <div class="d-inline-flex align-items-center w-100 justify-content-between">
                         <p><i class="fa fa-envelope mr-2"></i>pperezdemadrid@icloud.com</p>
 
-                        <p><i class="fa fa-user mr-2 "></i>Ingeniera de Sistemas de Información</p>
+                        <p><i class="fa fa-user mr-2 "></i>Information System Engineer</p>
                     </div>
                 </div>
             </div>
@@ -63,12 +82,11 @@
                 </button>
                 <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                     <div class="navbar-nav ml-auto py-0">
-                        <a href="indexFull.html" class="nav-item nav-link active">Home</a>
-                        <a href="about.html" class="nav-item nav-link">See Nodes</a>
-                        <a href="service.html" class="nav-item nav-link">Transactions</a>
-                        <a href="package.html" class="nav-item nav-link">Send DoveCoin</a>
-                        <a href="package.html" class="nav-item nav-link">Buy DoveCoin</a>
-                        <a href="contact.html" class="nav-item nav-link">Contact</a>
+                        <a href="{{ url_for('home') }}" class="nav-item nav-link active">Home</a>
+                        <a href="{{ url_for('get_chain') }}"  class="nav-item nav-link">See Nodes</a>
+                        <a href="{{ url_for('go_transaction') }}" class="nav-item nav-link">Transactions</a>
+                        <a href="{{ url_for('mine_block') }}"  class="nav-item nav-link">Mine a Block</a>
+                        <a href="{{ url_for('contact') }}"  class="nav-item nav-link">Contact</a>
                     </div>
                 </div>
             </nav>

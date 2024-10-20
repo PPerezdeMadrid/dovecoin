@@ -120,17 +120,21 @@ class Blockchain:
             return True
         else:
             return False
-        
+
+"""
+#################
+    Rutas
+################
+"""  
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('indexFull.html')
-
-@app.route('/index')
-def index():
     return render_template('index.html')
 
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
 
 # Dirección del nodo en el puerto 5000
 node_address = str(uuid4()).replace('-','')
@@ -189,18 +193,26 @@ def is_valid():
     # return jsonify(response), 200
     return render_template('isValid.html', data=jsonify(response)), 200
 
+# Ir a hacer una transacción
+@app.route('/GoTransaction')
+def go_transaction():
+    return render_template('addTransaction.html')
 
 # añadir una nueva transacción a la cadena de bloques
 @app.route('/add_transaction', methods=['POST'])
 def add_transaction():
-    json = request.get_json() #obtener json a través de la petición
-    transaction_keys = ['sender', 'receiver', 'amount']
-    if not all(key in json for key in transaction_keys): # Para cada clave de transaction key están en json?
-        return 'Error, faltan algunos elementos de la transacción' , 400
-    index = blockchain.add_transaction(json['sender'], json['receiver'], json['amount'])
-    response = {'message' : f'La transacción será añadida al bloque {index}',}
+    sender = request.form['sender']
+    receiver = request.form['receiver']
+    amount = request.form['amount']
+
+    if not all([sender, receiver, amount]):  
+        return 'Error, some transaction elements are missing', 400
+        
+    index = blockchain.add_transaction(sender, receiver, amount)
+    response = {'message': f'The transaction will be added to block {index}'}
+    
     # return jsonify(response) , 201 # Código "Created"
-    return render_template('addTransaction.html', data=jsonify(response)), 200
+    return render_template('addTransaction.html', data=response), 200
 
 """
 Descentralizar el bloque

@@ -8,11 +8,33 @@
     <div class="row mb-5">
         <div class="col-lg-12">
             <div class="section-title mb-5">
-                <h5 class="text-primary text-uppercase mb-3">Add Transaction</h5>
+                <h5 class="text-primary text-uppercase mb-3">Let's make a Transaction</h5>
             </div>
-            <div class="row">
-                <!-- Poner aqui un POST -->
-                <h1>{{ data.message }}</h1>
+            <div class="row justify-content-center">
+                <div class="col-lg-5 ">
+                    <div class="contact-form bg-white" style="padding: 5%; display:blocl;">
+                        <h2>Add Transaction</h2>
+                        <form action="/add_transaction" method="POST">
+                            <label for="sender">Sender:</label><br>
+                            <input type="text" id="sender" name="sender" required><br><br>
+
+                            <label for="receiver">Receiver:</label><br>
+                            <input type="text" id="receiver" name="receiver" required><br><br>
+
+                            <label for="amount">Amount:</label><br>
+                            <input type="number" id="amount" name="amount" required><br><br>
+
+                            <div class="text-center">
+                                <button class="btn btn-primary py-3 px-4" type="Submit">Submit</button>
+                                
+                            </div>
+                        </form>
+                        <!-- Conditional display of the message -->
+                        {% if data %}
+                            <h2>{{ data.message }}</h2>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>

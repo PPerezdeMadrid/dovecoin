@@ -24,13 +24,10 @@
     <link href="../static/css/style.css" rel="stylesheet">
 
     <style>
-        @media only screen and (max-width: 768px) {
-            .registrationmobile .text-white {
-                color: black !important;
-            }
-            .registrationmobile {
-            background-image: none !important;
-            }
+        #registerIndex {
+            background-color: #08142d;
+            padding: 5% 2%;
+
         }
 
         form {
@@ -51,6 +48,20 @@
             padding: 10px 15px;
             cursor: pointer;
         }
+        .hidden {
+            display: none;
+        }
+        #contactForm, #RegisterForm {
+            background-color: #f9f9f9;
+            padding: 1% 1% ;
+            border-radius: 5px;
+            width: auto;
+        }
+
+        .text-danger{
+            margin-left: 5%;
+        }
+
 
     </style>
 </head>
@@ -86,6 +97,7 @@
                         <a href="{{ url_for('get_chain') }}"  class="nav-item nav-link">See Nodes</a>
                         <a href="{{ url_for('go_transaction') }}" class="nav-item nav-link">Transactions</a>
                         <a href="{{ url_for('mine_block') }}"  class="nav-item nav-link">Mine a Block</a>
+                        <a href="{{ url_for('mine_block') }}"  class="nav-item nav-link">Blog</a>
                         <a href="{{ url_for('go_contact') }}"  class="nav-item nav-link">Contact</a>
                     </div>
                 </div>

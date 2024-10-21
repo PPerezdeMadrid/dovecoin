@@ -1,0 +1,169 @@
+{% extends 'template.html' %}
+
+
+
+{% block service %}
+
+    <!-- Log In Start -->
+    <!-- Formulario oculto inicialmente -->
+    <div class="container-fluid py-5 hidden" id="main-container"> <!-- añadimos class hidden -->
+        <div class="container py-5">
+            <div class="text-center mb-3 pb-3">
+                <h6 class="text-primary text-uppercase" style="letter-spacing: 5px;">Log In </h6>
+                <h1>Enter the world of DoveCoins</h1>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="contact-form bg-white" style="padding: 2%;">
+                        <div id="success"></div>
+                        <form name="sentLogIn" id="contactForm" novalidate="novalidate">
+                            <div class="form-row">
+                                <div class="control-group col-sm-6">
+                                    <input type="email" class="form-control p-4" id="email" placeholder="Your Email" required="required" data-validation-required-message="Please enter your email" />
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                                <div class="control-group col-sm-6">
+                                    <input type="password" class="form-control p-4" id="passwd" placeholder="Password" required="required" data-validation-required-message="Please enter your password" />
+                                    <p class="help-block text-danger"></p>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button class="btn btn-primary py-3 px-4" type="submit" id="submitLoginButton">Sumbmit</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Botón para mostrar formulario registro -->
+                    <div class="text-center mt-4">
+                        <button class="btn btn-secondary py-3 px-4" id="showNewFormBtn">Do not have an account? Register Here!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Log In End -->
+
+    <!-- Formulario inicialmente -->
+    <div class="container-fluid py-5" id="newFormContainer">
+        <div class="container py-5">
+            <div class="text-center mb-3 pb-3">
+                <h6 class="text-primary text-uppercase" style="letter-spacing: 5px;">Register</h6>
+                <h1>Create an account at DoveCoin</h1>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="contact-form bg-white" style="padding: 2%;">
+                        <form id="RegisterForm">
+                            <div class="control-group">
+                                <input type="text" class="form-control p-4" id="newName" placeholder="Name and Surnames" required>
+                                <p class="help-block text-danger" id="nameError" style="display: none;"></p> <!-- Mensaje de error -->
+                            </div>
+                            <div class="control-group">
+                                <input type="email" class="form-control p-4" id="newEmail" placeholder="Email" required>
+                                <p class="help-block text-danger"></p>
+                            </div>
+                            <div class="control-group">
+                                <input type="tel" class="form-control p-4" id="newPhone" placeholder="Telephone" required>
+                                <p class="help-block text-danger" id="phoneError" style="display: none;"></p> <!-- Mensaje de error -->
+                            </div>
+                            <div class="control-group">
+                                <input type="password" class="form-control p-4" id="newPassword" placeholder="Password" required>
+                                <p class="help-block text-danger"></p>
+                            </div>
+                            <div class="text-center">
+                                <button class="btn btn-primary py-3 px-4" type="submit">Submit</button>
+
+                            </div>
+                        </form>
+
+                    </div>
+                    <div class="text-center mt-4">
+                        <button class="btn btn-secondary py-3 px-4" type="button" id="hideNewFormBtn"> Already have an account? log in here</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mainContainer = document.getElementById('main-container');
+        const newFormContainer = document.getElementById('newFormContainer');
+        const showNewFormBtn = document.getElementById('showNewFormBtn');
+        const hideNewFormBtn = document.getElementById('hideNewFormBtn');
+        const registerForm = document.getElementById('RegisterForm');
+        const loginForm = document.forms['sentLogIn'];
+
+        // Mostrar el formulario LogIn y ocultar el contenido principal Register
+        showNewFormBtn.addEventListener('click', function() {
+            mainContainer.classList.add('hidden');
+            newFormContainer.classList.remove('hidden');
+        });
+
+        // Ocultar Register y mostrar el Login
+        hideNewFormBtn.addEventListener('click', function() {
+            newFormContainer.classList.add('hidden');
+            mainContainer.classList.remove('hidden');
+        });
+
+        // Enviar datos Register
+        registerForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Evitar recarga de página al enviar
+
+
+
+            //Name --> Expresión regular --> al menos dos palabras + solo letras y acentos
+            const namePattern = /^[A-Za-záéíóúÁÉÍÓÚñÑ]+(?:\s+[A-Za-záéíóúÁÉÍÓÚñÑ]+){1,}$/;
+            const newName = document.getElementById('newName').value;
+            const nameError = document.getElementById('nameError');
+
+            if (!namePattern.test(newName)) {
+                nameError.textContent = "Please, enter at least two words with only letters and accents, thank you."
+                nameError.style.display = 'block';
+                return; // Detener el envío si la validación falla
+            } else {
+                nameError.style.display = 'none'; // Ocultar el mensaje de error si la validación es exitosa
+            }
+
+            // Tlf: sólo numeros y sin espacios
+            const phonePattern = /^\d+$/; //solo nums
+            const newPhone = document.getElementById('newPhone').value;
+            const phoneError = document.getElementById('phoneError');
+
+            if (!phonePattern.test(newPhone)) {
+                phoneError.textContent = "Please, enter only numbers without spaces, thank you.";
+                phoneError.style.display = 'block';
+                return;
+            } else {
+                phoneError.style.display = 'none';
+            }
+
+            // Todo el registro ok
+            alert("Now you are a DoveCoin User!");
+
+            // Restablecer formulario y volver a mostrar el contenido principal
+            registerForm.reset();
+            newFormContainer.classList.add('hidden');
+            mainContainer.classList.remove('hidden');
+        });
+
+        // Lo mismo con Login
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            alert("Congratulations, you have successfully logged in!");
+        });
+
+    </script>
+{% endblock %}
+
+
+{% block how_it_works %}
+<!-- How It Works Start -->
+
+<!-- How It Works End -->
+{% endblock %}
+
+
+{% block registration %}
+<!-- Registration Start -->
+
+<!-- Registration End -->
+{% endblock %}

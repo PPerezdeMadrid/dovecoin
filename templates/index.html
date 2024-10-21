@@ -82,20 +82,18 @@
 
 {% block registration %}
 <!-- Registration Start -->
-<div class="container-fluid registrationmobile">
-    <div class="row">
-        <div class="col-lg-6 text-center text-lg-left">
+<div class="container-fluid registrationmobile" >
+    <div class="row mb-5" id="registerIndex">
+        <div class="col-lg-12 justify-content-center align-items-center text-center ">
             <div class="d-flex flex-column justify-content-center h-100 px-4 px-md-5 py-5 py-md-0">
-                <h5 class="text-primary text-uppercase mb-3">Register Now</h5>
-                <h1 class="display-4 mb-4">Join the DoveCoin Community</h1>
-                <a href="register.html" class="btn btn-primary py-md-3 px-md-5 mt-2">Register Now</a>
+                <h5 class="text-primary text-uppercase mb-3">Register Now <i class="fas fa-user-plus fa-1x mb-4 text-primary"> </i></h5>
+                <h1 class="display-4 mb-4 text-white">Join the DoveCoin Community </h1>
+                <a href="{{  url_for('go_register') }}" class="btn btn-primary py-md-3 px-md-5 mt-2">Register Now</a>
             </div>
-        </div>
-        <div class="col-lg-6">
-            <img class="img-fluid" src="../static/img/register.png" alt="">
         </div>
     </div>
 </div>
+
 <!-- Registration End -->
 {% endblock %}
 

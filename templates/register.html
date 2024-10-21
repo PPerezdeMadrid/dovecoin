@@ -52,29 +52,27 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="contact-form bg-white" style="padding: 2%;">
-                        <form id="RegisterForm">
+                        <form id="RegisterForm" action="/registerClient" method="POST" enctype="multipart/form-data">
                             <div class="control-group">
-                                <input type="text" class="form-control p-4" id="newName" placeholder="Name and Surnames" required>
-                                <p class="help-block text-danger" id="nameError" style="display: none;"></p> <!-- Mensaje de error -->
+                                <input type="text" class="form-control p-4" id="newName" name="name" placeholder="Name and Surnames" required>
+                                <p class="help-block text-danger" id="nameError" style="display: none;"></p> <!-- Error message -->
                             </div>
                             <div class="control-group">
-                                <input type="email" class="form-control p-4" id="newEmail" placeholder="Email" required>
+                                <input type="email" class="form-control p-4" id="newEmail" name="email" placeholder="Email" required>
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <input type="tel" class="form-control p-4" id="newPhone" placeholder="Telephone" required>
-                                <p class="help-block text-danger" id="phoneError" style="display: none;"></p> <!-- Mensaje de error -->
+                                <input type="password" class="form-control p-4" id="newPassword" name="password" placeholder="Password" required>
+                                <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <input type="password" class="form-control p-4" id="newPassword" placeholder="Password" required>
-                                <p class="help-block text-danger"></p>
+                                <input type="text" class="form-control p-4" id="Nodo" name="nodo" placeholder="http://192.168.X.X:xxxx" required>
+                                <p class="help-block text-danger" id="nameError" style="display: none;"></p> <!-- Error message -->
                             </div>
                             <div class="text-center">
                                 <button class="btn btn-primary py-3 px-4" type="submit">Submit</button>
-
                             </div>
                         </form>
-
                     </div>
                     <div class="text-center mt-4">
                         <button class="btn btn-secondary py-3 px-4" type="button" id="hideNewFormBtn"> Already have an account? log in here</button>

@@ -1,18 +1,25 @@
-from .. import db  # Importa db desde el archivo principal de la aplicación
+from flask_sqlalchemy import SQLAlchemy
 
-class Cliente(db.Model):
+db = SQLAlchemy()
+
+class Client(db.Model):
+    __tablename__ = 'clients'
+
     id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), nullable=False, unique=True)
-    telefono = db.Column(db.String(15), nullable=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    node = db.Column(db.String(100), nullable=False)
+
+    def __init__(self, name, email, password, node):
+        self.name = name
+        self.email = email
+        self.password = password
+        self.node = node
 
     def __repr__(self):
-        return f'<Cliente {self.nombre}>'
+        return f'<Client {self.name}>'
 
-""" Crear la base de datos en app.py   
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()  # Crea las tablas en la base de datos
-    app.run(debug=True)  # Ejecuta la aplicación
-"""
 
+def get_user_by_email(email):
+    return Client.query.filter_by(email=email).first()

@@ -1,15 +1,15 @@
 from uuid import uuid4
-from flask import Flask, render_template, request, jsonify,redirect, flash
+from flask import Flask, render_template, request, jsonify,redirect, flash, session,  url_for
 import modules.dovecoinBC as dc
 from flask_sqlalchemy import SQLAlchemy
+from modules.users import Client, get_user_by_email, db
+
 
 app = Flask(__name__)
 
-app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app)
 
 
 # Dirección del nodo en el puerto 5000
@@ -42,6 +42,57 @@ def go_register():
     Rutas Funcionalidades Básicas
 ###################################
 """
+
+@app.route('/registerClient', methods=['POST', 'GET'])
+def register():
+    print("entra registeer")
+    if request.method == 'POST':
+        print("Entraa POST")
+        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
+        node = request.form['nodo']
+
+        data = {
+            'name': str(name),
+            'email': str(email),
+            'node': str(node)
+        }
+
+        print("data --> " + str(data))
+
+        new_client = Client(name=name, email=email, password=password, node=node)
+
+        db.session.add(new_client)
+        db.session.commit()
+
+        # Flash success message and redirect
+        flash('Client registered successfully!')
+        print("==> Cliente Registrado: " + str(name) + ", "+ str(email))
+        return render_template('profile.html', data = data)
+
+    return render_template('register.html')
+
+@app.route('/login', methods=['POST'])
+def login():
+    email = request.form.get('email')
+    password = request.form.get('passwd')
+
+    user = get_user_by_email(email)
+
+    if user:
+        if user.password == password:
+            session['user_id'] = user['id']  # Store user id in session
+            session['user_email'] = user['email']
+            flash('Successfully logged in!', 'success')
+            return render_template("profile.html")
+        else:
+            flash('Incorrect password. Please try again.', 'danger')
+            return redirect(url_for('home'))
+    else:
+        flash('Email not found. Please try again.', 'danger')
+        return redirect(url_for('home'))
+
 
 @app.route('/mine_block', methods=['GET'])
 def mine_block():
@@ -159,6 +210,7 @@ def replace_chain():
 
 
 if __name__ == '__main__':
+    db.init_app(app)
     app.run(host='0.0.0.0', debug=True)
     # app.run(host='0.0.0.0', port=5001, debug=True)
 

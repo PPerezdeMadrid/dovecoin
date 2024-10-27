@@ -2,15 +2,16 @@ from uuid import uuid4
 from flask import Flask, render_template, request, jsonify,redirect, flash, session,  url_for
 import modules.dovecoinBC as dc
 from flask_sqlalchemy import SQLAlchemy
-from modules.users import Client, get_user_by_email, db
+from modules.users import Client, get_user_by_email, db, create_database
 
 
 app = Flask(__name__)
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key ='dovecoin'
 
-
+# Inicializar la base de datos
+db.init_app(app)
 
 # Dirección del nodo en el puerto 5000
 node_address = str(uuid4()).replace('-','')
@@ -43,15 +44,14 @@ def go_register():
 ###################################
 """
 
+
 @app.route('/registerClient', methods=['POST', 'GET'])
 def register():
-    print("entra registeer")
     if request.method == 'POST':
-        print("Entraa POST")
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
-        node = request.form['nodo']
+        node = request.form['node']
 
         data = {
             'name': str(name),
@@ -59,7 +59,17 @@ def register():
             'node': str(node)
         }
 
-        print("data --> " + str(data))
+        print("\033[1;32mClient Data:\033[0m")
+        print("\033[1;34m-----------------\033[0m")
+        for key, value in data.items():
+            print(f"\033[1;36m{key.capitalize()}:\033[0m \033[1;37m{value}\033[0m")
+        print("\033[1;34m-----------------\033[0m")
+
+        # Imprimir todos los clientes:
+        existing_clients = Client.query.all()  # Obtener todos los clientes
+        print("\033[1;33mExisting Clients' Emails:\033[0m")
+        for client in existing_clients:
+            print(f"\033[1;35m{client.email}\033[0m")
 
         new_client = Client(name=name, email=email, password=password, node=node)
 
@@ -69,9 +79,10 @@ def register():
         # Flash success message and redirect
         flash('Client registered successfully!')
         print("==> Cliente Registrado: " + str(name) + ", "+ str(email))
-        return render_template('profile.html', data = data)
+        return render_template('profile.html', data=data)
 
     return render_template('register.html')
+
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -157,12 +168,12 @@ def add_transaction():
     receiver = request.form['receiver']
     amount = request.form['amount']
 
-    if not all([sender, receiver, amount]):  
+    if not all([sender, receiver, amount]):
         return 'Error, some transaction elements are missing', 400
-        
+
     index = blockchain.add_transaction(sender, receiver, amount)
     response = {'message': f'The transaction will be added to block {index}'}
-    
+
     # return jsonify(response) , 201 # Código "Created"
     return render_template('addTransaction.html', data=response), 200
 
@@ -209,8 +220,9 @@ def replace_chain():
     return render_template('isValid.html', data=jsonify(response)), 200
 
 
+
 if __name__ == '__main__':
-    db.init_app(app)
+    create_database(app)
     app.run(host='0.0.0.0', debug=True)
     # app.run(host='0.0.0.0', port=5001, debug=True)
 

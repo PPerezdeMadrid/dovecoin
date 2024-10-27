@@ -23,3 +23,7 @@ class Client(db.Model):
 
 def get_user_by_email(email):
     return Client.query.filter_by(email=email).first()
+
+def create_database(app):
+    with app.app_context():
+        db.create_all()

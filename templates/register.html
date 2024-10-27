@@ -16,14 +16,14 @@
                 <div class="col-lg-8">
                     <div class="contact-form bg-white" style="padding: 2%;">
                         <div id="success"></div>
-                        <form name="sentLogIn" id="contactForm" novalidate="novalidate">
+                        <form name="sentLogIn" action="/login" method="POST" id="contactForm" novalidate="novalidate">
                             <div class="form-row">
                                 <div class="control-group col-sm-6">
-                                    <input type="email" class="form-control p-4" id="email" placeholder="Your Email" required="required" data-validation-required-message="Please enter your email" />
+                                    <input type="email" class="form-control p-4" name="email" id="email" placeholder="Your Email" required="required" data-validation-required-message="Please enter your email" />
                                     <p class="help-block text-danger"></p>
                                 </div>
                                 <div class="control-group col-sm-6">
-                                    <input type="password" class="form-control p-4" id="passwd" placeholder="Password" required="required" data-validation-required-message="Please enter your password" />
+                                    <input type="password" class="form-control p-4" id="passwd" name="passwd" placeholder="Password" required="required" data-validation-required-message="Please enter your password" />
                                     <p class="help-block text-danger"></p>
                                 </div>
                             </div>
@@ -52,10 +52,11 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8">
                     <div class="contact-form bg-white" style="padding: 2%;">
-                        <form id="RegisterForm" action="/registerClient" method="POST" enctype="multipart/form-data">
+
+                        <form id="RegisterForm" action="/registerClient" method="POST">
                             <div class="control-group">
                                 <input type="text" class="form-control p-4" id="newName" name="name" placeholder="Name and Surnames" required>
-                                <p class="help-block text-danger" id="nameError" style="display: none;"></p> <!-- Error message -->
+                                <p class="help-block text-danger" id="nameError" style="display: none;"></p>
                             </div>
                             <div class="control-group">
                                 <input type="email" class="form-control p-4" id="newEmail" name="email" placeholder="Email" required>
@@ -66,13 +67,14 @@
                                 <p class="help-block text-danger"></p>
                             </div>
                             <div class="control-group">
-                                <input type="text" class="form-control p-4" id="Nodo" name="nodo" placeholder="http://192.168.X.X:xxxx" required>
-                                <p class="help-block text-danger" id="nameError" style="display: none;"></p> <!-- Error message -->
+                                <input type="text" class="form-control p-4" id="Nodo" name="node" placeholder="http://192.168.X.X:xxxx" required>
+                                <p class="help-block text-danger" id="nameError" style="display: none;"></p>
                             </div>
                             <div class="text-center">
                                 <button class="btn btn-primary py-3 px-4" type="submit">Submit</button>
                             </div>
                         </form>
+
                     </div>
                     <div class="text-center mt-4">
                         <button class="btn btn-secondary py-3 px-4" type="button" id="hideNewFormBtn"> Already have an account? log in here</button>
@@ -102,52 +104,6 @@
             mainContainer.classList.remove('hidden');
         });
 
-        // Enviar datos Register
-        registerForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Evitar recarga de página al enviar
-
-
-
-            //Name --> Expresión regular --> al menos dos palabras + solo letras y acentos
-            const namePattern = /^[A-Za-záéíóúÁÉÍÓÚñÑ]+(?:\s+[A-Za-záéíóúÁÉÍÓÚñÑ]+){1,}$/;
-            const newName = document.getElementById('newName').value;
-            const nameError = document.getElementById('nameError');
-
-            if (!namePattern.test(newName)) {
-                nameError.textContent = "Please, enter at least two words with only letters and accents, thank you."
-                nameError.style.display = 'block';
-                return; // Detener el envío si la validación falla
-            } else {
-                nameError.style.display = 'none'; // Ocultar el mensaje de error si la validación es exitosa
-            }
-
-            // Tlf: sólo numeros y sin espacios
-            const phonePattern = /^\d+$/; //solo nums
-            const newPhone = document.getElementById('newPhone').value;
-            const phoneError = document.getElementById('phoneError');
-
-            if (!phonePattern.test(newPhone)) {
-                phoneError.textContent = "Please, enter only numbers without spaces, thank you.";
-                phoneError.style.display = 'block';
-                return;
-            } else {
-                phoneError.style.display = 'none';
-            }
-
-            // Todo el registro ok
-            alert("Now you are a DoveCoin User!");
-
-            // Restablecer formulario y volver a mostrar el contenido principal
-            registerForm.reset();
-            newFormContainer.classList.add('hidden');
-            mainContainer.classList.remove('hidden');
-        });
-
-        // Lo mismo con Login
-        loginForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            alert("Congratulations, you have successfully logged in!");
-        });
 
     </script>
 {% endblock %}

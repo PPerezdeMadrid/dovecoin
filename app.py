@@ -44,7 +44,7 @@ def go_register():
 ###################################
 """
 
-
+# FALTA: Manejo errores!
 @app.route('/registerClient', methods=['POST', 'GET'])
 def register():
     if request.method == 'POST':
@@ -93,10 +93,15 @@ def login():
 
     if user:
         if user.password == password:
-            session['user_id'] = user['id']  # Store user id in session
-            session['user_email'] = user['email']
+            data = {
+                'id': user.id,
+                'name': user.name,
+                'email': user.email,
+                'node': user.node
+            }
+
             flash('Successfully logged in!', 'success')
-            return render_template("profile.html")
+            return render_template("profile.html", data=data)
         else:
             flash('Incorrect password. Please try again.', 'danger')
             return redirect(url_for('home'))

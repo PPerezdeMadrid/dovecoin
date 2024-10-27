@@ -1,29 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Client Data</title>
-</head>
-<body>
+{% extends 'template.html' %}
 
-<div class="container">
-    <h2>Client Data</h2>
-    <table>
-        <tr>
-            <td class="key">Name:</td>
-            <td>{{ data.name }}</td>
-        </tr>
-        <tr>
-            <td class="key">Email:</td>
-            <td>{{ data.email }}</td>
-        </tr>
-        <tr>
-            <td class="key">Node:</td>
-            <td>{{ data.node }}</td>
-        </tr>
+
+
+{% block service %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Client Data</h2>
+    <table class="table table-bordered table-striped">
+        <tbody>
+            <tr>
+                <td class="font-weight-bold">Name:</td>
+                <td>{{ data.name }}</td>
+            </tr>
+            <tr>
+                <td class="font-weight-bold">Email:</td>
+                <td>{{ data.email }}</td>
+            </tr>
+            <tr>
+                <td class="font-weight-bold">Node:</td>
+                <td>{{ data.node }}</td>
+            </tr>
+        </tbody>
     </table>
 </div>
+{% endblock %}
 
-</body>
-</html>

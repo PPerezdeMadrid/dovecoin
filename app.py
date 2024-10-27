@@ -138,6 +138,33 @@ def mine_block():
     # return jsonify(response), 200  # pasarlo a JSON + código
     return render_template('mineBlock.html', data=response), 200
 
+@app.route('/mine_block_ajax', methods=['GET'])
+def mine_block_ajax():
+    userEmail = "Empty Transaction"  # CAMBIAR!!!!
+    print("Entra en la función mine_block")
+    # 1) Proof of work --> param: previous_proof
+    previous_block = blockchain.get_previous_block()
+    previous_proof = previous_block['proof']
+    proof = blockchain.proof_of_work(previous_proof)
+
+    # 2) Crear el bloque --> param: proof y prev hash
+    previous_hash = blockchain.hash(previous_block)
+    blockchain.add_transaction(sender=node_address, receiver=userEmail, amount=0)
+    block = blockchain.create_block(proof, previous_hash)
+
+    # 3) Mostrar la info en postman
+    response = {
+        'message': 'Congratulations! You have just mined a block',
+        'index': block['index'],  # Así bloque genesis es el 1
+        'timestamp': block['timestamp'],
+        'proof': block['proof'],  # el Nonce!
+        'previous_hash': block['previous_hash'],
+        'transactions': block['transactions'],
+    }
+    print(response)
+
+    return jsonify(response), 200  # pasarlo a JSON + código
+
 # Obtener la cadena de bloques al completo
 @app.route('/get_chain', methods=['GET'])
 def get_chain():

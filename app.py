@@ -37,6 +37,10 @@ def go_contact():
 def go_register():
     return render_template('register.html')
 
+@app.route('/blog', methods=['GET', 'POST'])
+def go_blog():
+    return render_template('blog.html')
+
 
 """
 ###################################
@@ -193,7 +197,7 @@ def is_valid():
 def go_transaction():
     return render_template('addTransaction.html')
 
-# añadir una nueva transacción a la cadena de bloques
+
 @app.route('/add_transaction', methods=['POST'])
 def add_transaction():
     sender = request.form['sender']
@@ -201,13 +205,13 @@ def add_transaction():
     amount = request.form['amount']
 
     if not all([sender, receiver, amount]):
-        return 'Error, some transaction elements are missing', 400
+        return jsonify({'message': 'Error, some transaction elements are missing'}), 400
 
     index = blockchain.add_transaction(sender, receiver, amount)
     response = {'message': f'The transaction will be added to block {index}'}
 
-    # return jsonify(response) , 201 # Código "Created"
-    return render_template('addTransaction.html', data=response), 200
+    return jsonify(response), 200  # Código "OK"
+
 
 """
 ###############################################

@@ -3,6 +3,33 @@
 
 
 {% block service %}
+<style>
+    .blockComplete {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .block-circle {
+        border-radius: 15px; /* Ajusta el valor para cambiar el grado de redondeo */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        background-color: green;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 5%;
+        padding: 2%;
+    }
+
+    .doveBlock {
+        flex: 1;
+        background-color: #f8f9fa; /* Color de fondo para la sección de detalles */
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+   
+
+</style>
 <!-- Service Start -->
 <div class="container py-5">
     <div class="row mb-5">
@@ -13,13 +40,15 @@
             <div class="information">
                 <h1>Blockchain Data</h1>
                 <p><strong>Chain Length:</strong> {{ data.length }}</p>
-                
+
                 <h2>Blocks:</h2>
                 <div class="blockComplete">
                     <ul>
                         {% for block in data.chain %}
-                            <li>
-                                <h3>Block {{ block.index }}</h3>
+                            <li class="block">
+                                <div class="block-circle">
+                                    <h3 style="color: white;">Block {{ block.index }}</h3>
+                                </div>
                                 <div class="doveBlock">
                                     <p><strong>Timestamp:</strong> {{ block.timestamp }}</p>
                                     <p><strong>Proof of Work:</strong> {{ block.proof }}</p>
@@ -39,19 +68,17 @@
                                         <li>No transactions in this block</li>
                                     {% endif %}
                                 </ul>
-                        
                             </li>
-                        
                         {% endfor %}
                     </ul>
                 </div>
-            
             </div>
         </div>
     </div>
 </div>
 <!-- Service End -->
 {% endblock %}
+
 
 
 {% block how_it_works %}

@@ -1,82 +1,105 @@
 {% extends 'template.html' %}
 
 
-
 {% block service %}
-<style>
-    .blockComplete {
-        display: flex;
-        flex-wrap: wrap;
-    }
-    .block-circle {
-        border-radius: 15px; /* Ajusta el valor para cambiar el grado de redondeo */
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        background-color: green;
-        color: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-right: 5%;
-        padding: 2%;
-    }
-
-    .doveBlock {
-        flex: 1;
-        background-color: #f8f9fa; /* Color de fondo para la sección de detalles */
-        padding: 10px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-   
-
-</style>
-<!-- Service Start -->
-<div class="container py-5">
-    <div class="row mb-5">
-        <div class="col-lg-12">
-            <div class="section-title mb-5">
-                <h5 class="text-primary text-uppercase mb-3">Let's see the chain</h5>
-            </div>
-            <div class="information">
-                <h1>Blockchain Data</h1>
-                <p><strong>Chain Length:</strong> {{ data.length }}</p>
-
-                <h2>Blocks:</h2>
-                <div class="blockComplete">
-                    <ul>
-                        {% for block in data.chain %}
-                            <li class="block">
-                                <div class="block-circle">
-                                    <h3 style="color: white;">Block {{ block.index }}</h3>
-                                </div>
-                                <div class="doveBlock">
-                                    <p><strong>Timestamp:</strong> {{ block.timestamp }}</p>
-                                    <p><strong>Proof of Work:</strong> {{ block.proof }}</p>
-                                    <p><strong>Previous Hash:</strong> {{ block.previous_hash }}</p>
-                                </div>
-                                <h5>Transactions:</h5>
-                                <ul>
-                                    {% if block.transactions %}
-                                        {% for transaction in block.transactions %}
-                                            <li>
-                                                <strong>From:</strong> {{ transaction.sender }}<br>
-                                                <strong>To:</strong> {{ transaction.recipient }}<br>
-                                                <strong>Amount:</strong> {{ transaction.amount }}
-                                            </li>
-                                        {% endfor %}
-                                    {% else %}
-                                        <li>No transactions in this block</li>
-                                    {% endif %}
-                                </ul>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
+<div class="container mt-5">
+    <div class="mt-3">
+        <!-- Blockchain Data Start -->
+        <div class="text-center mb-4">
+            <h1 class="text-primary">Blockchain Data</h1>
+            <p><strong>Chain Length:</strong> {{ data.length }}</p>
         </div>
+
+        <h2 class="text-center">Blocks:</h2>
+        <div class="blockComplete">
+            <ul class="block-list">
+                {% for block in data.chain %}
+                    <li class="block-item">
+                        <div class="block-index">Block {{ block.index }}</div>
+                        <div class="block-details">
+                            <p><strong>Timestamp:</strong> {{ block.timestamp }}</p>
+                            <p><strong>Proof of Work:</strong> {{ block.proof }}</p>
+                            <p><strong>Previous Hash:</strong> {{ block.previous_hash }}</p>
+                            <p><strong>Transactions:</strong></p>
+                            <ul>
+                                {% if block.transactions %}
+                                    {% for transaction in block.transactions %}
+                                        <li>
+                                            <strong>Sender:</strong> {{ transaction.sender }} <br>
+                                            <strong>Receiver:</strong> {{ transaction.recipient }} <br>
+                                            <strong>Amount:</strong> {{ transaction.amount }}
+                                        </li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li>No transactions in this block</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <!-- Blockchain Data End -->
     </div>
 </div>
-<!-- Service End -->
+
+<style>
+    .message-container {
+        margin-top: 20px;
+    }
+
+    .block-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 0;
+        list-style-type: none;
+    }
+    
+    .block-item {
+        border: 2px solid green;
+        border-radius: 8px;
+        margin: 1.5%; 
+        padding: 2%; 
+        width: 30%; 
+        max-width: 100%; 
+        background-color: #f8f9fa; 
+        transition: transform 0.2s; 
+        overflow: hidden; 
+        text-overflow: ellipsis; 
+        white-space: normal; /* Permitir saltos de línea en lugar de forzar una línea única */
+        box-sizing: border-box; 
+    }
+
+    .block-details p {
+        margin: 5px 0; 
+        word-wrap: break-word; /* Permite que las palabras largas se dividan */
+    }
+
+    .block-item:hover {
+        transform: scale(1.05); /* Efecto de aumento al pasar el ratón */
+    }
+
+    .block-index {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-align: center; /* Centrar texto */
+    }
+
+    .block-details {
+        font-size: 0.9rem;
+    }
+
+    .block-details p {
+        margin: 5px 0; /* Espaciado entre párrafos */
+    }
+
+    .block-details ul {
+        padding-left: 20px; /* Sangría para la lista de transacciones */
+    }
+</style>
+
 {% endblock %}
 
 

@@ -27,3 +27,8 @@ def get_user_by_email(email):
 def create_database(app):
     with app.app_context():
         db.create_all()
+
+def get_all_nodes():
+    nodes = db.session.query(Client.node).distinct().all()
+    return [node[0] for node in nodes]  
+

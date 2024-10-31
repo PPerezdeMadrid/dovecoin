@@ -2,7 +2,8 @@ from uuid import uuid4
 from flask import Flask, render_template, request, jsonify,redirect, flash, session,  url_for
 import modules.dovecoinBC as dc
 from flask_sqlalchemy import SQLAlchemy
-from modules.users import Client, get_user_by_email, db, create_database
+from modules.users import Client, get_user_by_email, db, create_database, get_all_nodes
+import argparse
 
 
 app = Flask(__name__)
@@ -114,34 +115,6 @@ def login():
         return redirect(url_for('home'))
 
 
-@app.route('/mine_block', methods=['GET'])
-def mine_block():
-    userEmail = "Paloma PML" # CAMBIAR!!!!
-    print("Entra en la función mine_block")
-    # 1) Proof of work --> param: previous_proof
-    previous_block = blockchain.get_previous_block()
-    previous_proof = previous_block['proof']
-    proof = blockchain.proof_of_work(previous_proof)
-
-    # 2) Crear el bloque --> param: proof y prev hash
-    previous_hash = blockchain.hash(previous_block)
-    blockchain.add_transaction(sender=node_address, receiver = userEmail, amount=0)
-    block = blockchain.create_block(proof, previous_hash)
-
-    # 3) Mostrar la info en postman
-    response = {
-        'message': 'Congratulations! You have just mined a block',
-        'index': block['index'],  # Así bloque genesis es el 1
-        'timestamp': block['timestamp'],
-        'proof': block['proof'],  # el Nonce!
-        'previous_hash': block['previous_hash'],
-        'transactions': block['transactions'],
-    }
-    print(response)
-
-    # return jsonify(response), 200  # pasarlo a JSON + código
-    return render_template('mineBlock.html', data=response), 200
-
 @app.route('/mine_block_ajax', methods=['GET'])
 def mine_block_ajax():
     userEmail = "Empty Transaction"  # CAMBIAR!!!!
@@ -220,11 +193,12 @@ def add_transaction():
 """
 
 # Conectar nodos
-@app.route('/connect_node', methods = ['POST'])
+@app.route('/connect_node', methods = ['POST', 'GET'])
 def connect_node():
-    json = request.get_json() # {'nodes': ['127.0.0.1:5001', '127.0.0.1:5002',...]}
-    nodes = json.get('nodes')
-    # Comprobaciones previas
+    # json = request.get_json() # {'nodes': ['127.0.0.1:5001', '127.0.0.1:5002',...]}
+    # nodes = json.get('nodes')
+    nodes = get_all_nodes()
+    print("==> Nodos: " + str(nodes))
     if nodes is None:
         return f'No hay nodos para añadir', 400
     # Recorrer los nodos y darlos de alta
@@ -232,33 +206,56 @@ def connect_node():
         blockchain.add_node(node)
 
     response = {
-                'message': 'Todos los nodos han sido conectados. La cadena de DoveCoin contiene los nodos siguientes: ',
+                'message': 'Every node has been connected. The DoveCoin chain contains the following nodes ',
                 'total_nodes': list(blockchain.nodes)
                 }
-    # return jsonify(response), 201
-    return render_template('connectNode.html', data=jsonify(response)), 200
+    return jsonify(response), 201
+    # return render_template('connectNode.html', data=response), 201
+
 
 # Reemplazar cadena por la cadena más larga (si es necesario)
-@app.route('/replace_chain', methods=['GET'])
+@app.route('/replace_chain', methods=['GET', 'POST'])
 def replace_chain():
-    replace_chain = blockchain.replace_chain() # True or not
+    replace_chain = blockchain.replace_chain()  # True o False
     if replace_chain:
         response = {
             'message': 'Los nodos tenían diferentes cadenas y han sido reemplazadas por la más larga',
-            'new_chain': blockchain.chain
+            'new_chain': [
+                {
+                    "index": block['index'],
+                    "timestamp": block['timestamp'],
+                    "proof": block['proof'],
+                    "previous_hash": block['previous_hash'],
+                    "transactions": block['transactions']
+                } for block in blockchain.chain  # Asegúrate de que aquí obtienes un diccionario
+            ]
         }
     else:
         response = {
             'message': 'Todo correcto, la cadena en todos los nodos ya es la más larga',
-            'actual_chain': blockchain.chain
+            'actual_chain': [
+                {
+                    "index": block['index'],
+                    "timestamp": block['timestamp'],
+                    "proof": block['proof'],
+                    "previous_hash": block['previous_hash'],
+                    "transactions": block['transactions']
+                } for block in blockchain.chain  # Asegúrate de que aquí obtienes un diccionario
+            ]
         }
-    # return jsonify(response), 200
-    return render_template('isValid.html', data=jsonify(response)), 200
+    return jsonify(response), 200
+
+
 
 
 
 if __name__ == '__main__':
-    create_database(app)
-    app.run(host='0.0.0.0', debug=True)
-    # app.run(host='0.0.0.0', port=5001, debug=True)
 
+    parser = argparse.ArgumentParser(description="Ejecuta app.py --port <puerto>")
+    parser.add_argument('--port', type=int, default=5000, help="Puerto en el que se ejecutará la aplicación")
+    
+    args = parser.parse_args()
+
+    create_database(app)
+
+    app.run(host='0.0.0.0', port=args.port, debug=True)

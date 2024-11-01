@@ -1,0 +1,112 @@
+<!-- admin.html -->
+{% extends 'template.html' %}
+
+{% block service %}
+<div class="container mt-5">
+    <h1>Administrar Usuarios</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% if clients is none %}
+        <!-- Formulario de inicio de sesión para admin -->
+        <form action="{{ url_for('admin') }}" method="post">
+            <div class="mb-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+        </form>
+    {% else %}
+        <!-- Tabla de usuarios -->
+        <table class="table table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+                <tr>
+                    <td>{{ client.id }}</td>
+                    <td>{{ client.name }}</td>
+                    <td>{{ client.email }}</td>
+                    <td>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <form action="{{ url_for('delete_user', user_id=client.id) }}" method="post" style="margin: 0;">
+                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                            </form>
+                            <form action="{{ url_for('edit_user', user_id=client.id) }}" method="get" style="margin: 0;">
+                                <button type="submit" class="btn btn-warning">Editar</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Contenedor para cambiar contraseña -->
+        <div class="mt-5">
+            <h2>Cambiar Contraseña</h2>
+            <form id="changePasswordForm">
+                <div class="mb-3">
+                    <label for="user_id" class="form-label">ID del Usuario</label>
+                    <input type="number" class="form-control" id="user_id" name="user_id" required>
+                </div>
+                <div class="mb-3">
+                    <label for="new_password" class="form-label">Nueva Contraseña</label>
+                    <input type="password" class="form-control" id="new_password" name="new_password" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Actualizar Contraseña</button>
+            </form>
+            <div class="response-message mt-2"></div>
+        </div>
+    {% endif %}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#changePasswordForm').on('submit', function(e) {
+        e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+
+        var userId = $('#user_id').val();
+        var newPassword = $('#new_password').val();
+        
+        $.ajax({
+            url: '/change_password/' + userId,
+            type: 'POST',
+            data: {
+                password: newPassword
+            },
+            success: function(response) {
+                $('.response-message').html('<div class="alert alert-success">' + response.message + '</div>');
+                $('#changePasswordForm')[0].reset(); // Reiniciar el formulario
+            },
+            error: function(xhr) {
+                var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'Error al cambiar la contraseña';
+                $('.response-message').html('<div class="alert alert-danger">' + errorMessage + '</div>');
+            }
+        });
+    });
+});
+</script>
+
+<div class="container mt-5">
+    <a href="{{ url_for('logout') }}" class="btn btn-primary">Cerrar Sesión</a>  <!-- Botón de cierre de sesión -->
+    <!-- Resto de tu contenido aquí -->
+</div>
+
+{% endblock %}
+
+{% block how_it_works %}
+
+{% endblock %}

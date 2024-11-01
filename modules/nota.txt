@@ -1,0 +1,4 @@
+- replace falla
+- la dirección del nodo no se deberia guardar en la base de datos
+- Inicio de sesion
+- Usuario Admin que gestione la base de datos

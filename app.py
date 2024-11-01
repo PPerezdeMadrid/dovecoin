@@ -10,6 +10,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key ='dovecoin'
+ADMIN_PASSWD = "DoveCoin1234+"
 
 # Inicializar la base de datos
 db.init_app(app)
@@ -245,6 +246,88 @@ def replace_chain():
         }
     return jsonify(response), 200
 
+
+
+"""
+###############################################
+    Rutas Administrador
+###############################################
+"""
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if request.method == 'POST':
+        password = request.form['password']
+        if password == ADMIN_PASSWD:  
+            session['is_admin'] = True  # Marca la sesión como admin
+            return redirect(url_for('admin')) 
+        else:
+            flash('Contraseña incorrecta', 'error')
+
+    # Si el usuario no es admin, se muestra el formulario de contraseña
+    if 'is_admin' not in session:
+        return render_template('admin.html', clients=None)  # Muestra el formulario
+
+    # Si el usuario es admin
+    clients = Client.query.all()
+    return render_template('admin.html', clients=clients) 
+
+
+@app.route('/logout')
+def logout():
+    session.pop('is_admin', None)  # Eliminar la clave de sesión que indica que el usuario está conectado
+    flash('Has cerrado sesión con éxito.', 'success')
+    return render_template('index.html')  
+
+
+
+@app.route('/delete_user/<int:user_id>', methods=['POST'])
+def delete_user(user_id):
+    client = Client.query.get(user_id)
+    if client:
+        db.session.delete(client)
+        db.session.commit()
+        flash('Usuario eliminado exitosamente.', 'success')
+    else:
+        flash('Usuario no encontrado.', 'error')
+    return redirect(url_for('admin'))
+
+@app.route('/update_user/<int:user_id>', methods=['POST'])
+def update_user(user_id):
+    data = request.form
+    client = Client.query.get(user_id)
+
+    if client:
+        client.name = data.get('name')
+        client.email = data.get('email')
+        client.node = data.get('node')
+        db.session.commit()
+        flash('Usuario actualizado con éxito.', 'success')
+    else:
+        flash('Usuario no encontrado.', 'error')
+
+    return redirect(url_for('admin'))
+
+@app.route('/edit_user/<int:user_id>', methods=['GET'])
+def edit_user(user_id):
+    client = Client.query.get(user_id)
+    if client:
+        return render_template('editUsers.html', client=client)
+    flash('Usuario no encontrado.', 'error')
+    return redirect(url_for('admin'))
+
+
+@app.route('/change_password/<int:user_id>', methods=['POST'])
+def change_password(user_id):
+    client = Client.query.get(user_id)
+    if client:
+        new_password = request.form.get('password')
+        if new_password:
+            client.password = new_password  # Asegúrate de aplicar el hash si estás usando hashing
+            db.session.commit()
+            return jsonify({'message': 'Contraseña actualizada con éxito'}), 200
+        return jsonify({'message': 'La contraseña no puede estar vacía'}), 400
+    return jsonify({'message': 'Usuario no encontrado'}), 404
 
 
 

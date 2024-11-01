@@ -160,9 +160,9 @@ def is_valid():
     current_chain = blockchain.chain
     is_valid = blockchain.is_chain_valid(current_chain)
     if is_valid:
-        response = {'message': 'Todo correcto. La cadena de bloques es válida.'}
+        response = {'message': 'Everything is correct. The blockchain is valid..'}
     else:
-        response = {'message': 'La cadena de bloques no es válida.'}
+        response = {'message': 'The blockchain is not valid.'}
     # return jsonify(response), 200
     return render_template('isValid.html', data=jsonify(response)), 200
 
@@ -201,7 +201,7 @@ def connect_node():
     nodes = get_all_nodes()
     print("==> Nodos: " + str(nodes))
     if nodes is None:
-        return f'No hay nodos para añadir', 400
+        return f'There are no nodes to add', 400
     # Recorrer los nodos y darlos de alta
     for node in nodes:
         blockchain.add_node(node)
@@ -220,7 +220,7 @@ def replace_chain():
     replace_chain = blockchain.replace_chain()  # True o False
     if replace_chain:
         response = {
-            'message': 'Los nodos tenían diferentes cadenas y han sido reemplazadas por la más larga',
+            'message': 'The nodes had different strings and have been replaced by the longest one',
             'new_chain': [
                 {
                     "index": block['index'],
@@ -228,12 +228,12 @@ def replace_chain():
                     "proof": block['proof'],
                     "previous_hash": block['previous_hash'],
                     "transactions": block['transactions']
-                } for block in blockchain.chain  # Asegúrate de que aquí obtienes un diccionario
+                } for block in blockchain.chain  
             ]
         }
     else:
         response = {
-            'message': 'Todo correcto, la cadena en todos los nodos ya es la más larga',
+            'message': 'Everything is correct; the string in all nodes is already the longest.',
             'actual_chain': [
                 {
                     "index": block['index'],
@@ -262,7 +262,7 @@ def admin():
             session['is_admin'] = True  # Marca la sesión como admin
             return redirect(url_for('admin')) 
         else:
-            flash('Contraseña incorrecta', 'error')
+            flash('Incorrect password', 'error')
 
     # Si el usuario no es admin, se muestra el formulario de contraseña
     if 'is_admin' not in session:
@@ -276,7 +276,7 @@ def admin():
 @app.route('/logout')
 def logout():
     session.pop('is_admin', None)  # Eliminar la clave de sesión que indica que el usuario está conectado
-    flash('Has cerrado sesión con éxito.', 'success')
+    flash('You have successfully logged out', 'success')
     return render_template('index.html')  
 
 
@@ -287,9 +287,9 @@ def delete_user(user_id):
     if client:
         db.session.delete(client)
         db.session.commit()
-        flash('Usuario eliminado exitosamente.', 'success')
+        flash('User successfully deleted.', 'success')
     else:
-        flash('Usuario no encontrado.', 'error')
+        flash('User not found', 'error')
     return redirect(url_for('admin'))
 
 @app.route('/update_user/<int:user_id>', methods=['POST'])
@@ -302,9 +302,9 @@ def update_user(user_id):
         client.email = data.get('email')
         client.node = data.get('node')
         db.session.commit()
-        flash('Usuario actualizado con éxito.', 'success')
+        flash('User successfully updated.', 'success')
     else:
-        flash('Usuario no encontrado.', 'error')
+        flash('User not found', 'error')
 
     return redirect(url_for('admin'))
 
@@ -313,7 +313,7 @@ def edit_user(user_id):
     client = Client.query.get(user_id)
     if client:
         return render_template('editUsers.html', client=client)
-    flash('Usuario no encontrado.', 'error')
+    flash('User not found', 'error')
     return redirect(url_for('admin'))
 
 
@@ -323,11 +323,11 @@ def change_password(user_id):
     if client:
         new_password = request.form.get('password')
         if new_password:
-            client.password = new_password  # Asegúrate de aplicar el hash si estás usando hashing
+            client.password = new_password  
             db.session.commit()
-            return jsonify({'message': 'Contraseña actualizada con éxito'}), 200
-        return jsonify({'message': 'La contraseña no puede estar vacía'}), 400
-    return jsonify({'message': 'Usuario no encontrado'}), 404
+            return jsonify({'message': 'Password updated successfully'}), 200
+        return jsonify({'message': 'The password cannot be empty'}), 400
+    return jsonify({'message': 'User not foun'}), 404
 
 
 

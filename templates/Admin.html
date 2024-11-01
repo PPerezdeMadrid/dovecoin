@@ -16,10 +16,10 @@
         <!-- Formulario de inicio de sesión para admin -->
         <form action="{{ url_for('admin') }}" method="post">
             <div class="mb-3">
-                <label for="password" class="form-label">Contraseña</label>
+                <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
-            <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+            <button type="submit" class="btn btn-primary">Log In</button>
         </form>
     {% else %}
         <!-- Tabla de usuarios -->
@@ -27,9 +27,9 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nombre</th>
+                    <th>Name</th>
                     <th>Email</th>
-                    <th>Acciones</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,10 +41,10 @@
                     <td>
                         <div style="display: flex; gap: 10px; align-items: center;">
                             <form action="{{ url_for('delete_user', user_id=client.id) }}" method="post" style="margin: 0;">
-                                <button type="submit" class="btn btn-danger">Eliminar</button>
+                                <button type="submit" class="btn btn-danger">Delete</button>
                             </form>
                             <form action="{{ url_for('edit_user', user_id=client.id) }}" method="get" style="margin: 0;">
-                                <button type="submit" class="btn btn-warning">Editar</button>
+                                <button type="submit" class="btn btn-warning">Edit</button>
                             </form>
                         </div>
                     </td>
@@ -53,22 +53,23 @@
             </tbody>
         </table>
 
-        <!-- Contenedor para cambiar contraseña -->
+        <!-- Change Passwd Start -->
         <div class="mt-5">
             <h2>Cambiar Contraseña</h2>
             <form id="changePasswordForm">
                 <div class="mb-3">
-                    <label for="user_id" class="form-label">ID del Usuario</label>
+                    <label for="user_id" class="form-label">User ID</label>
                     <input type="number" class="form-control" id="user_id" name="user_id" required>
                 </div>
                 <div class="mb-3">
-                    <label for="new_password" class="form-label">Nueva Contraseña</label>
+                    <label for="new_password" class="form-label">New Password</label>
                     <input type="password" class="form-control" id="new_password" name="new_password" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Actualizar Contraseña</button>
+                <button type="submit" class="btn btn-primary">Update Password</button>
             </form>
             <div class="response-message mt-2"></div>
         </div>
+        <!-- Change Passwd End-->
     {% endif %}
 </div>
 
@@ -92,7 +93,7 @@ $(document).ready(function() {
                 $('#changePasswordForm')[0].reset(); // Reiniciar el formulario
             },
             error: function(xhr) {
-                var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'Error al cambiar la contraseña';
+                var errorMessage = xhr.responseJSON ? xhr.responseJSON.message : 'Error changing the password.';
                 $('.response-message').html('<div class="alert alert-danger">' + errorMessage + '</div>');
             }
         });
@@ -101,8 +102,7 @@ $(document).ready(function() {
 </script>
 
 <div class="container mt-5">
-    <a href="{{ url_for('logout') }}" class="btn btn-primary">Cerrar Sesión</a>  <!-- Botón de cierre de sesión -->
-    <!-- Resto de tu contenido aquí -->
+    <a href="{{ url_for('logout') }}" class="btn btn-success btn-lg">Log Out</a>  
 </div>
 
 {% endblock %}

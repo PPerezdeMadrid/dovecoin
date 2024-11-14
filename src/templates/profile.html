@@ -264,9 +264,8 @@
                     <div class="contact-form bg-white" style="padding: 5%;">
                         <h2>Add Transaction</h2>
                         <form id="transaction-form">
-                            <label for="sender">Sender:</label><br>
-                            <input type="text" id="sender" name="sender" required><br><br>
-
+                            <label for="sender">Sender: {{session.get('user_email')}}</label><br>
+                            
                             <label for="receiver">Receiver:</label><br>
                             <input type="text" id="receiver" name="receiver" required><br><br>
 

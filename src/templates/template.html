@@ -74,8 +74,11 @@
                 <div class="col-lg-12 text-center text-lg-left mb-2 mb-lg-0">
                      <div class="d-inline-flex align-items-center w-100 justify-content-between">
                         <p><i class="fa fa-envelope mr-2"></i>pperezdemadrid@icloud.com</p>
-
+                        {% if session.get('user_id') %}
+                        <p><i class="fa fa-user mr-2 "></i>Welcome, {{ session['user_name'] }}!</p>
+                        {% else %}
                         <p><i class="fa fa-user mr-2 "></i>Information System Engineer</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -101,8 +104,6 @@
                             <a href="{{ url_for('go_profile') }}" class="nav-item nav-link">
                                 <i class="fas fa-user"></i> Profile
                             </a>
-                            <a href="{{ url_for('go_profile') }}"  class="nav-item nav-link"><span>Welcome, {{ session['user_name'] }}!</span></a>
-                            
                         {% else %}
                         <a href="{{ url_for('go_register') }}" class="nav-item nav-link">
                             <i class="fas fa-user"></i> Log In

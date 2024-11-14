@@ -202,7 +202,7 @@ def go_transaction():
 
 @app.route('/add_transaction', methods=['POST'])
 def add_transaction():
-    sender = request.form['sender']
+    sender = session.get('user_email')
     receiver = request.form['receiver']
     amount = request.form['amount']
 

@@ -94,12 +94,20 @@
                 <div class="collapse navbar-collapse justify-content-between px-3" id="navbarCollapse">
                     <div class="navbar-nav ml-auto py-0">
                         <a href="{{ url_for('home') }}" class="nav-item nav-link active">Home</a>
-                        <a href="{{ url_for('get_chain') }}"  class="nav-item nav-link">See Nodes</a>
+                        <a href="{{ url_for('see_chain') }}"  class="nav-item nav-link">See Nodes</a>
                         <a href="{{ url_for('go_blog') }}"  class="nav-item nav-link">Blog</a>
                         <a href="{{ url_for('go_contact') }}"  class="nav-item nav-link">Contact</a>
+                        {% if session.get('user_id') %}
+                            <a href="{{ url_for('go_profile') }}" class="nav-item nav-link">
+                                <i class="fas fa-user"></i> Profile
+                            </a>
+                            <a href="{{ url_for('go_profile') }}"  class="nav-item nav-link"><span>Welcome, {{ session['user_name'] }}!</span></a>
+                            
+                        {% else %}
                         <a href="{{ url_for('go_register') }}" class="nav-item nav-link">
                             <i class="fas fa-user"></i> Log In
                         </a>
+                        {% endif %}
                     </div>
                 </div>
             </nav>

@@ -97,23 +97,36 @@ class Blockchain:
         self.nodes.add(parsed_url.netloc)
 
     # Protocolo de consenso (apuntes)
-    def replace_chain(self): # cambiar la cadena, por ejemplo para actualizar la cadena de bloques
+    def replace_chain(self, network):
         # Nodo tiene la cadena más larga, llamo a replace_chain para el resto de nodos
-        network = self.nodes
+        print("================> ENTRA EN REPLACE CHAIN")
+        print("================> NETWORK: " + str(network))
         longest_chain = None
-        max_length = len(self.chain) # longitud máx es la mía salvo que encuentre otra
-        for node in network:
-            response = requests.get(f'http://{node}/get_chain') # devuelve chain y length
-            if response.status_code==200:
-                length = response.json()['length']
-                chain = response.json()['chain']
+        max_length = len(self.chain)  # La longitud máxima es la actual, salvo que se encuentre otra más larga
+        print("================ LONGITUD DE MI CADENA: " + str(max_length))
+        
+        for node_tuple in network:
+            # Extraer la dirección IP y puerto sin el prefijo 'http://'
+            node = node_tuple[0].replace('http://', '')  # Elimina 'http://'
+            print(f'LA cadena viene de: http://{node}/get_chain')
+            
+            # Llama al endpoint /get_chain del nodo actual
+            response = requests.get(f'http://{node}/get_chain')
+            
+            if response.status_code == 200:
+                # Procesar la respuesta aquí según lo que devuelva el endpoint
+                data = response.json()
+                length = data['length']
+                chain = data['chain']
+                
+                # Si la cadena es más larga y válida, actualiza la cadena local
                 if length > max_length and self.is_chain_valid(chain):
                     max_length = length
                     longest_chain = chain
 
-        if longest_chain is not None:
-            # actualizar mi cadena
+        # Si se ha encontrado una cadena más larga, reemplaza la actual
+        if longest_chain:
             self.chain = longest_chain
             return True
-        else:
-            return False
+        
+        return False

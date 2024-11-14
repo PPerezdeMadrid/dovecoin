@@ -2,7 +2,7 @@ from uuid import uuid4
 from flask import Flask, render_template, request, jsonify,redirect, flash, session,  url_for
 import modules.dovecoinBC as dc
 from flask_sqlalchemy import SQLAlchemy
-from modules.users import Client, get_user_by_email, db, create_database, get_all_nodes
+from modules.users import Client, get_user_by_email, db, create_database, get_all_nodes, ConnectedNode
 import argparse
 
 
@@ -89,27 +89,47 @@ def register():
 
     return render_template('register.html')
 
+@app.route('/go_profile', methods=['GET'])
+def go_profile():
+    # Verificar si el usuario está en la sesión
+    if 'user_id' in session:
+        # Obtener los datos del usuario desde la sesión
+        user_data = {
+            'id': session['user_id'],
+            'name': session['user_name'],
+            'email': session['user_email'],
+            'node': session['user_node']
+        }
+        return render_template("profile.html", data=user_data)
+    else:
+        # Si no hay usuario en la sesión, redirigir al login o home
+        flash('You must be logged in to view your profile.', 'danger')
+        return redirect(url_for('home'))
+
+
 
 @app.route('/login', methods=['POST'])
 def login():
     email = request.form.get('email')
     password = request.form.get('passwd')
 
+    # Suponiendo que get_user_by_email() devuelve un objeto usuario o None
     user = get_user_by_email(email)
 
     if user:
         if user.password == password:
-            data = {
-                'id': user.id,
-                'name': user.name,
-                'email': user.email,
-                'node': user.node
-            }
-
+            # Guardamos los datos del usuario en la sesión
+            session['user_id'] = user.id
+            session['user_name'] = user.name
+            session['user_email'] = user.email
+            session['user_node'] = user.node
+            
             flash('Successfully logged in!', 'success')
-            return render_template("profile.html", data=data)
+            print("Inicio sesión exitoso")
+            return render_template("profile.html", data=user)  # `data` se usa para mostrar datos en el perfil
         else:
             flash('Incorrect password. Please try again.', 'danger')
+            print("Incorrect Passwd")
             return redirect(url_for('home'))
     else:
         flash('Email not found. Please try again.', 'danger')
@@ -144,8 +164,8 @@ def mine_block_ajax():
     return jsonify(response), 200  # pasarlo a JSON + código
 
 # Obtener la cadena de bloques al completo
-@app.route('/get_chain', methods=['GET'])
-def get_chain():
+@app.route('/see_chain', methods=['GET'])
+def see_chain():
     response = {
         'chain': blockchain.chain,
         'length': len(blockchain.chain),
@@ -153,6 +173,14 @@ def get_chain():
     print(response)
     # return jsonify(response), 200
     return render_template('getChain.html', data=response), 200
+
+@app.route('/get_chain', methods=['GET'])
+def get_chain():
+    response = {
+        'chain': blockchain.chain,
+        'length': len(blockchain.chain),
+    }
+    return jsonify(response), 200
 
 # implementar "is valid"
 @app.route('/is_valid', methods=['GET'])
@@ -196,28 +224,42 @@ def add_transaction():
 # Conectar nodos
 @app.route('/connect_node', methods = ['POST', 'GET'])
 def connect_node():
-    # json = request.get_json() # {'nodes': ['127.0.0.1:5001', '127.0.0.1:5002',...]}
-    # nodes = json.get('nodes')
-    nodes = get_all_nodes()
-    print("==> Nodos: " + str(nodes))
-    if nodes is None:
-        return f'There are no nodes to add', 400
-    # Recorrer los nodos y darlos de alta
-    for node in nodes:
-        blockchain.add_node(node)
+    ip = session.get('user_node')
+    print("IP del cliente: " + str(ip))
+    if ip:
+        existing_node = ConnectedNode.query.filter_by(ip_address=ip).first()
+        print("Existing node: " + str(existing_node))
+        if not existing_node:
+            # Crear y añadir la nueva conexión
+            new_node = ConnectedNode(ip_address=ip)
+            db.session.add(new_node)
+            db.session.commit()
+            ips = [node.ip_address for node in ConnectedNode.query.with_entities(ConnectedNode.ip_address).all()]
+            for node_ip in ips:
+                print("++++++++++++++++++++++ Node de la network SUPUESTAMENTE: " + str(node_ip))
+                blockchain.add_node(node_ip)
+            response = {
+                'message': 'Your IP has been added to the connected nodes. The DoveCoin chain contains the following nodes:  ',
+                'total_nodes': get_all_nodes()
+            }
+            print("=====> Response" + str(response))
+            return jsonify(response), 201
+        else:
+            response = {
+                'message': 'Your IP is already in the blockchain. The DoveCoin chain contains the following users:  ',
+                'total_nodes': get_all_nodes()
+            }
+            print("NODE NETWORK" + str(blockchain.nodes))
+            return jsonify(response), 200
 
-    response = {
-                'message': 'Every node has been connected. The DoveCoin chain contains the following nodes ',
-                'total_nodes': list(blockchain.nodes)
-                }
-    return jsonify(response), 201
-    # return render_template('connectNode.html', data=response), 201
+    return jsonify({"status": "invalid request"}), 400
 
 
 # Reemplazar cadena por la cadena más larga (si es necesario)
 @app.route('/replace_chain', methods=['GET', 'POST'])
 def replace_chain():
-    replace_chain = blockchain.replace_chain()  # True o False
+    network = ConnectedNode.query.with_entities(ConnectedNode.ip_address).all()
+    replace_chain = blockchain.replace_chain(network)  # True o False
     if replace_chain:
         response = {
             'message': 'The nodes had different strings and have been replaced by the longest one',
@@ -277,7 +319,17 @@ def admin():
 def logout():
     session.pop('is_admin', None)  # Eliminar la clave de sesión que indica que el usuario está conectado
     flash('You have successfully logged out', 'success')
-    return render_template('index.html')  
+    return render_template('index.html') 
+
+@app.route('/clear_nodes', methods=['POST'])
+def clear_nodes():
+    try:
+        db.session.query(ConnectedNode).delete()
+        db.session.commit()
+        return jsonify({"message": "All nodes have been successfully removed!"}), 200
+    except Exception as e:
+        db.session.rollback()  # Revertir los cambios en caso de error
+        return jsonify({"message": "An error occurred while clearing nodes."}), 500  
 
 
 

@@ -89,7 +89,9 @@
                             $('#nodeInfo').html(`
                                 <p>${response.message}</p>
                                 <ul>
-                                    ${response.total_nodes.map(node => `<li>${node}</li>`).join('')}
+                                    ${response.total_nodes.map(node => 
+                                        `<li><strong>Node </strong>: ${node.ip_address}, connected in: ${node.connection_time}</li>`
+                                    ).join('')}
                                 </ul>
                             `);
                         },
@@ -102,6 +104,32 @@
         </script>
         <!-- Connect Node End -->
     </div>
+</div>
+<div class="container mt-3">
+    <!-- Clear Nodes Start -->
+<button id="clearNodesButton" class="btn btn-danger">Clear Nodes</button>
+<div id="clearNodesMessage" class="mt-3"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#clearNodesButton').click(function() {
+            $.ajax({
+                url: '/clear_nodes',
+                type: 'POST',
+                success: function(response) {
+                    $('#clearNodesMessage').html(`<p>${response.message}</p>`);
+                    $('#nodeInfo').html('');
+                },
+                error: function(error) {
+                    $('#clearNodesMessage').html(`<p>Error: ${error.responseJSON.message}</p>`);
+                }
+            });
+        });
+    });
+</script>
+<!-- Clear Nodes End -->
+
 </div>
 <div class="container mt-5">
     <div class="mt-3">

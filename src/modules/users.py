@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -28,7 +29,14 @@ def create_database(app):
     with app.app_context():
         db.create_all()
 
-def get_all_nodes():
-    nodes = db.session.query(Client.node).distinct().all()
-    return [node[0] for node in nodes]  
 
+class ConnectedNode(db.Model):
+    __tablename__ = 'connected_node'
+    id = db.Column(db.Integer, primary_key=True)
+    ip_address = db.Column(db.String(255), unique=True, nullable=False)
+    connection_time = db.Column(db.DateTime, default=datetime.utcnow)
+
+def get_all_nodes():
+    nodes = ConnectedNode.query.all()
+    connected_nodes = [{"ip_address": node.ip_address, "connection_time": node.connection_time} for node in nodes]
+    return connected_nodes 

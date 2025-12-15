@@ -1,5 +1,185 @@
 # Dovecoin
 
+> 🇬🇧 **English version**  
+> 👉 [Ver versión en Español](#versión-en-español)
+
+
+## Description
+
+Dovecoin is an example cryptocurrency designed to explore how blockchain technology and cryptocurrencies work.  
+This project provides a hands-on understanding of blockchain concepts, smart contracts, and cryptocurrency development.
+
+
+## Features
+
+- **Cryptocurrency**: Basic implementation of a digital currency with essential functionalities.
+- **Smart Contract**: Solidity code that enables automated transactions on the network.
+- **src**: Web application for the DoveCoin cryptocurrency.
+
+
+## Installation
+
+1. Clone the repository.
+2. Install the dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Run the application:
+
+   ```bash
+   python app.py
+   ```
+
+## Explanation
+
+### Cryptocurrency
+
+Practical implementation of cryptocurrencies using the Flask framework:
+
+* **Distributed Blockchain**: Mechanism to securely and distributively store transactions.
+
+* **Proof of Work (PoW)**: Consensus system that ensures data integrity.
+
+* `palomaDoveCoin.py`, `pedroDoveCoin.py`, and `solDoveCoin.py` simulate three users. These files can be used with Postman to visualize the distributed behavior of the blockchain.
+
+* `blockchain.py` contains the basic cryptocurrency logic, while `dovecoin.py` implements a unique PoW algorithm specific to Dovecoin.
+
+
+## Smart Contract
+
+This section simulates a wallet (**MyEtherWallet**) and an ICO contract.
+
+### What is an ICO?
+
+An **ICO (Initial Coin Offering)** is a fundraising mechanism in the cryptocurrency space where a new company offers tokens or cryptocurrencies to investors in exchange for capital. It is similar to an IPO in traditional stock markets, with some key differences:
+
+* **Token Issuance**: Investors purchase tokens that may represent future access to products or services, or may simply hold market value.
+* **Transparency**: ICOs are usually accompanied by a *white paper* explaining the project, its vision, the underlying technology, and how funds will be used.
+* **Risks**: Investing in an ICO carries significant risks, as many projects are new and lack a proven track record. Regulatory and security concerns are also common.
+* **Early Stage**: ICOs typically occur before the launch of a product or service, meaning investors are betting on the project’s future potential.
+
+
+## Source (`src`)
+
+This section contains all the code for a Flask-based web server.
+
+### Usage
+
+To run the application, use the following command:
+
+```bash
+python app.py --port <port>
+```
+
+The port is important because it determines the IP address used to connect with other nodes and verify whether your blockchain is the most up to date.
+
+---
+
+## Functionalities
+
+### Basic Routes
+
+* **`/`**: Home page that renders `index.html`.
+* **`/contact`**: Displays a contact form. Supports GET and POST methods.
+* **`/register`**: Displays a registration form. Supports GET and POST methods.
+* **`/blog`**: Displays a blog page. Supports GET and POST methods.
+
+
+
+### Core Blockchain Routes
+
+* **`/registerClient`**
+
+  * Method: POST
+  * Registers a new client with name, email, password, and node.
+  * Stores the information in the database and displays a success message.
+
+* **`/login`**
+
+  * Method: POST
+  * Authenticates a user using email and password.
+  * Redirects to the user profile upon successful login.
+
+* **`/mine_block_ajax`**
+
+  * Method: GET
+  * Mines a new block in the blockchain.
+  * Performs proof of work and adds an empty transaction.
+
+* **`/get_chain`**
+
+  * Method: GET
+  * Returns the full blockchain and its length.
+
+* **`/is_valid`**
+
+  * Method: GET
+  * Checks whether the blockchain is valid.
+
+* **`/GoTransaction`**
+
+  * Method: GET
+  * Displays a form to perform a transaction.
+
+* **`/add_transaction`**
+
+  * Method: POST
+  * Adds a new transaction to the blockchain.
+  * Returns the index of the block where the transaction will be added.
+
+
+### Decentralization Routes
+
+* **`/connect_node`**
+
+  * Method: GET and POST
+  * Connects new nodes to the blockchain.
+  * Displays the list of connected nodes.
+
+* **`/replace_chain`**
+
+  * Method: GET and POST
+  * Replaces the blockchain with the longest valid chain if needed.
+
+
+### Administrative Routes
+
+* **`/admin`**
+
+  * Method: GET and POST
+  * Displays the admin panel.
+  * Allows authentication via password.
+
+* **`/logout`**
+
+  * Method: GET
+  * Logs out the administrator.
+
+* **`/delete_user/<int:user_id>`**
+
+  * Method: POST
+  * Deletes a user by ID.
+
+* **`/update_user/<int:user_id>`**
+
+  * Method: POST
+  * Updates user information by ID.
+
+* **`/edit_user/<int:user_id>`**
+
+  * Method: GET
+  * Displays the user edit form.
+
+* **`/change_password/<int:user_id>`**
+
+  * Method: POST
+  * Changes a user’s password.
+
+---
+
+# Versión en Español
+
 ## Descripción
 Dovecoin es una criptomoneda de ejemplo diseñada para explorar el funcionamiento de la tecnología blockchain y criptomonedas. Este proyecto ofrece una comprensión práctica de conceptos de blockchain, contratos inteligentes y desarrollo de criptomonedas.
 
